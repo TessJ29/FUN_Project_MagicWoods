@@ -4,25 +4,23 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
+    // yukarı aşapı gitme yok
+    // zıplayınca uçuyor
     public float movePower = 10f;
-    public float jumpPower = 5f; //Set Gravity Scale in Rigidbody2D Component to 5
     private Rigidbody2D rb;
     private Animator anim;
     Vector3 movement;
     private int direction = 1;
-    bool isJumping = false;
     private bool alive = true;
-    private bool canJump = true;
-
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-
     }
+
+
 
     private void Update()
     {
@@ -32,47 +30,16 @@ public class PlayerMovement : MonoBehaviour
             Hurt();
             Die();
             Attack();
-
             Run();
             MoveUp();
             MoveDown();
-
-
-            if (Input.GetButtonDown("Jump") && canJump)
-            {
-                isJumping = true;
-                anim.SetBool("isJump", true);
-                canJump = false;
-            }
-            if (!isJumping)
-            {
-                return;
-            }
-
-            rb.velocity = Vector2.zero;
-
-            Vector2 jumpVelocity = new Vector2(0, jumpPower);
-            rb.AddForce(jumpVelocity, ForceMode2D.Impulse);
-
-            isJumping = false;
-
-
         }
     }
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        anim.SetBool("isJump", false);
-
-
-        canJump = true;
-    }
-
 
     void Run()
     {
         Vector3 moveVelocity = Vector3.zero;
         anim.SetBool("isRun", false);
-
 
         if (Input.GetAxisRaw("Horizontal") < 0)
         {
@@ -82,8 +49,8 @@ public class PlayerMovement : MonoBehaviour
             transform.localScale = new Vector3(direction, 1, 1);
             if (!anim.GetBool("isJump"))
                 anim.SetBool("isRun", true);
-
         }
+
         if (Input.GetAxisRaw("Horizontal") > 0)
         {
             direction = 1;
@@ -92,10 +59,9 @@ public class PlayerMovement : MonoBehaviour
             transform.localScale = new Vector3(direction, 1, 1);
             if (!anim.GetBool("isJump"))
                 anim.SetBool("isRun", true);
-
         }
-        transform.position += moveVelocity * movePower * Time.deltaTime;
 
+        transform.position += moveVelocity * movePower * Time.deltaTime;
     }
 
     void MoveUp()
@@ -105,6 +71,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetAxisRaw("Vertical") > 0)
         {
+            if (!anim.GetBool("isJump"))
+                anim.SetBool("isRun", true);
             moveVelocity = Vector3.up;
             transform.position += moveVelocity * movePower * Time.deltaTime;
         }
@@ -119,9 +87,10 @@ public class PlayerMovement : MonoBehaviour
         Vector3 moveVelocity = Vector3.zero;
         anim.SetBool("isClimb", true);
 
-
         if (Input.GetAxisRaw("Vertical") < 0)
         {
+            if (!anim.GetBool("isJump"))
+                anim.SetBool("isRun", true);
             moveVelocity = Vector3.down;
             transform.position += moveVelocity * movePower * Time.deltaTime;
         }
@@ -131,26 +100,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void Jump()
-    {
-        if ((Input.GetButtonDown("Jump") || Input.GetAxisRaw("Vertical") > 0)
-        && !anim.GetBool("isJump"))
-        {
-            isJumping = true;
-            anim.SetBool("isJump", true);
-        }
-        if (!isJumping)
-        {
-            return;
-        }
-
-        rb.velocity = Vector2.zero;
-
-        Vector2 jumpVelocity = new Vector2(0, jumpPower);
-        rb.AddForce(jumpVelocity, ForceMode2D.Impulse);
-
-        isJumping = false;
-    }
     void Attack()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -158,6 +107,7 @@ public class PlayerMovement : MonoBehaviour
             anim.SetTrigger("attack");
         }
     }
+
     void Hurt()
     {
         if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -188,8 +138,3 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 }
-
-
-
-// yukarı aşapı gitme yok
-// zıplayınca uçuyor
