@@ -6,7 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     // yukarı aşapı gitme yok
     // zıplayınca uçuyor
-    public float movePower = 10f;
+    public float movePower = 6f;
     private Rigidbody2D rb;
     private Animator anim;
     Vector3 movement;
@@ -67,7 +67,7 @@ public class PlayerMovement : MonoBehaviour
     void MoveUp()
     {
         Vector3 moveVelocity = Vector3.zero;
-        anim.SetBool("isClimb", true);
+
 
         if (Input.GetAxisRaw("Vertical") > 0)
         {
@@ -76,16 +76,13 @@ public class PlayerMovement : MonoBehaviour
             moveVelocity = Vector3.up;
             transform.position += moveVelocity * movePower * Time.deltaTime;
         }
-        else
-        {
-            anim.SetBool("isClimb", false);
-        }
+
     }
 
     void MoveDown()
     {
         Vector3 moveVelocity = Vector3.zero;
-        anim.SetBool("isClimb", true);
+
 
         if (Input.GetAxisRaw("Vertical") < 0)
         {
@@ -94,10 +91,7 @@ public class PlayerMovement : MonoBehaviour
             moveVelocity = Vector3.down;
             transform.position += moveVelocity * movePower * Time.deltaTime;
         }
-        else
-        {
-            anim.SetBool("isClimb", false);
-        }
+
     }
 
     void Attack()
